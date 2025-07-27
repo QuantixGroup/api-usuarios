@@ -10,8 +10,8 @@ class SocioController extends Controller
     public function index()
     {
         return Socio::all();
-        
     }
+
     public function insertar(Request $request)
     {
         $socio = new Socio();
@@ -21,14 +21,17 @@ class SocioController extends Controller
         $socio->apellido = $request->post("apellido");
         $socio->telefono = $request->post("telefono");
         $socio->direccion = $request->post("direccion");
+        $socio->fecha_nacimiento = $request->post("fecha_nacimiento");
+        $socio->departamento = $request->post("departamento");
+        $socio->ciudad = $request->post("ciudad");
         $socio->email = $request->post("email");
         $socio->contraseña = $request->post("contraseña");
-        $socio->IngresoMensual = $request->post("IngresoMensual");
-        $socio->profesion = $request->post("profesion");
-        $socio->estado = $request->post("estado");
-        $socio->IntegrantesFamiliares = $request->post("IntegrantesFamiliares");
-        $socio->FechaIngreso = $request->post("FechaIngreso");
-        $socio->FechaEgreso = $request->post("FechaEgreso");
+        $socio->ingreso_mensual = $request->post("ingreso_mensual");
+        $socio->situacion_laboral = $request->post("situacion_laboral");
+        $socio->estado = 'pendiente'; 
+        $socio->integrantes_familiares = $request->post("integrantes_familiares");
+        $socio->fecha_ingreso = $request->post("fecha_ingreso");
+        $socio->fecha_egreso = $request->post("fecha_egreso");
 
         $socio->save();
 
