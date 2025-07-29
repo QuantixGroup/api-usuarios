@@ -10,6 +10,11 @@ class Socio extends Model
 {
     use SoftDeletes;
 
+    protected $primaryKey = 'cedula'; 
+    public $incrementing = false; 
+    protected $keyType = 'string'; 
+    
+
     protected $fillable = [
         'cedula',
         'nombre',
