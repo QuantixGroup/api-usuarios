@@ -41,27 +41,5 @@ class SocioController extends Controller
         return $socio;
     }
 
-    public function aprobar($cedula)
-    {
-        $socio = Socio::where('cedula', $cedula)->first();
-
-        if (!$socio || $socio->estado !== 'pendiente') {
-            return response()->json(['error' => 'Socio no encontrado o ya procesado'], 404);
-        }
-
-        $socio->estado = 'aprobado';
-        $socio->save();
-
-        $user = new User();
-        $user->name = $socio->nombre . ' ' . $socio->apellido;
-        $user->cedula = $socio->cedula;
-        $user->email = $socio->email;
-
-        $user->password = $socio->contraseña;
-
-        $user->rol = 'socio';
-        $user->save();
-
-        return response()->json(['message' => 'Socio aprobado y usuario creado']);
-    }
+    
 }
