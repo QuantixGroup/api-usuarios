@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAdministradoresTable extends Migration
+class CreateAdminsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,19 @@ class CreateAdministradoresTable extends Migration
      */
     public function up()
     {
-        Schema::create('administradores', function (Blueprint $table) {
-            $table->string('cedula')->primary();
+        Schema::create('admins', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('cedula')->unique();
             $table->string('email')->unique();
-            $table->string('contraseña')->nullable();
-            $table->string('nombre');
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
             $table->string('apellido');
             $table->string('telefono');
             $table->string('direccion');
-            $table->date('fecha_ingreso');
+            $table->date('fecha_ingreso')->now();
             $table->date('fecha_egreso')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -34,6 +37,6 @@ class CreateAdministradoresTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('administradores');
+        Schema::dropIfExists('admins');
     }
 }
