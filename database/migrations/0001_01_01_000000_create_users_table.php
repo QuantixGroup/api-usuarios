@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('cedula')->unique();
             $table->string('email')->unique();
-            $table->enum('rol', ['socio', 'admin'])->default('socio'); 
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->softDeletes();
