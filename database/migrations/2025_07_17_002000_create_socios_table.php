@@ -11,7 +11,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('socios', function (Blueprint $table) {
-            $table->string('cedula')->primary();
+            $table->id();
+            $table->string('cedula')->unique();
             $table->string('nombre');
             $table->string('apellido');
             $table->date('fecha_nacimiento');
