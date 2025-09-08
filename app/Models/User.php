@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Hash;
 
 
@@ -19,12 +20,14 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    protected $table = 'users';
     protected $fillable = [
         'name',
         'cedula',
         'email',
         'password',
-        'rol'
+        'telefono',
+        'direccion'
     ];
 
     /**
@@ -46,28 +49,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function findForPassport($username)
+    public function findForPassport(string $username)
     {
         return $this->where('cedula', $username)->first();
     }
-
-    public function socio()
-    {
-        return $this->hasOne(Socio::class, 'cedula', 'cedula');
-    }
-
-    public function validateForPassportPasswordGrant($password)
-    {
-        if (!Hash::check($password, $this->password)) {
-            return false;
-        }
-
-        if ($this->rol === 'socio' && optional($this->socio)->estado !== 'aprobado') {
-            return false;
-        }
-
-        return true;
-    }
-
 
 }

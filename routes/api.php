@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SocioController;
+use App\Http\Controllers\AuthController;
 
 
 
@@ -18,8 +19,27 @@ use App\Http\Controllers\SocioController;
 |
 */
 
-Route::get('/socios', [SocioController::class, 'index']);
+Route::post('/iniciar-sesion', [AuthController::class, 'iniciarSesion']);
+
 Route::post('/socios', [SocioController::class, 'insertar']);
-Route::post('/user',[UserController::class,"Register"]);
-Route::get('/validate',[UserController::class,"ValidateToken"])->middleware('auth:api');
-Route::get('/logout',[UserController::class,"Logout"])->middleware('auth:api');
+
+Route::middleware('auth:api')->group(function () {
+
+    Route::get('/socios', [SocioController::class, 'index']);
+    Route::get('/socios/{id}', [SocioController::class, 'mostrar']);
+    Route::put('/socios/{id}', [SocioController::class, 'actualizar']);
+    Route::delete('/socios/{id}', [SocioController::class, 'eliminar']);
+
+    Route::post('/cerrar-sesion', [AuthController::class, 'cerrarSesion']);
+
+    Route::get('/perfil', [UserController::class, 'verMiPerfil']);
+    Route::put('/perfil', [UserController::class, 'actualizarMiPerfil']);
+    Route::put('/perfil/contrasena', [UserController::class, 'cambiarMiContrasena']);
+    Route::delete('/perfil', [UserController::class, 'eliminarMiCuenta']);
+
+
+});
+
+
+Route::get('/validate', [UserController::class, "ValidateToken"])->middleware('auth:api');
+Route::get('/logout', [UserController::class, "Logout"])->middleware('auth:api');
