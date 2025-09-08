@@ -23,7 +23,7 @@ class CreateAprobacionesAdministrativasTable extends Migration
             $table->text('observaciones')->nullable();
             $table->timestamps();
 
-            $table->foreign('cedula_adm')->references('cedula')->on('administradores')->onDelete('cascade');
+            $table->foreign('cedula_adm')->references('cedula')->on('admins')->onDelete('cascade');
             $table->foreign('cedula_socio')->references('cedula')->on('socios')->onDelete('cascade');
         });
     }
