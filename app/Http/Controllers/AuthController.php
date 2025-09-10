@@ -10,7 +10,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $datos = $request->validate([
-            'cedula' => ['required', 'string'], //capaz deberìa ser int
+            'cedula' => ['required', 'string'], 
             'contrasena' => ['required', 'string'],
         ]);
 

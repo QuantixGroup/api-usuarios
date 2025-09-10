@@ -19,7 +19,7 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-Route::post('/iniciar-sesion', [AuthController::class, 'iniciarSesion']);
+Route::post('/iniciar-sesion', [AuthController::class, 'login']);
 
 Route::post('/socios', [SocioController::class, 'insertar']);
 
@@ -30,7 +30,7 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/socios/{id}', [SocioController::class, 'actualizar']);
     Route::delete('/socios/{id}', [SocioController::class, 'eliminar']);
 
-    Route::post('/cerrar-sesion', [AuthController::class, 'cerrarSesion']);
+    Route::post('/cerrar-sesion', [AuthController::class, 'logout']);
 
     Route::get('/perfil', [UserController::class, 'verMiPerfil']);
     Route::put('/perfil', [UserController::class, 'actualizarMiPerfil']);
