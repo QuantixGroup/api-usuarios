@@ -3,31 +3,36 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Request as HttpRequest;
+
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+     public function login(HttpRequest $request)
     {
-        $datos = $request->validate([
-            'cedula' => ['required', 'string'], //capaz deberìa ser int
-            'contrasena' => ['required', 'string'],
+        $data = $request->validate([
+            'cedula'     => ['required','string'],
+            'contrasena' => ['required','string'],
         ]);
 
-        $respuesta = Http::asForm()->post(url('/oauth/token'), [
-            'grant_type' => 'password',
-            'client_id' => config('services.passport.password_client_id'),
+        $params = [
+            'grant_type'    => 'password',
+            'client_id'     => config('services.passport.password_client_id'),
             'client_secret' => config('services.passport.password_client_secret'),
-            'username' => $datos['cedula'],     
-            'password' => $datos['contrasena'], 
-           
+            'username'      => $data['cedula'],
+            'password'      => $data['contrasena'],
+            'scope'         => '*',
+        ];
+
+        $sub = HttpRequest::create('/oauth/token', 'POST', $params, [], [], [
+            'HTTP_ACCEPT' => 'application/json',
         ]);
 
-        if (!$respuesta->ok()) {
-            return response()->json(['error' => 'Credenciales inválidas'], 401);
-        }
+        $res = app()->handle($sub);
 
-        return $respuesta->json(); 
+        return response($res->getContent(), $res->getStatusCode())
+            ->withHeaders($res->headers->all());
     }
 
     public function logout(Request $request)
