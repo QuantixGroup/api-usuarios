@@ -34,8 +34,6 @@ class SocioController extends Controller
         $socio->fecha_ingreso = $request->post("fecha_ingreso");
         $socio->fecha_egreso = $request->post("fecha_egreso");
         $password = $request->post('contraseña') ?? $request->post('cedula'); //Esto está para quitar
-        $socio->contraseña = Hash::make($password); 
-
         $socio->save();
 
         return $socio;
