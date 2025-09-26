@@ -36,6 +36,7 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/perfil', [UserController::class, 'actualizarMiPerfil']);
     Route::put('/perfil/contrasena', [UserController::class, 'cambiarMiContrasena']);
     Route::delete('/perfil', [UserController::class, 'eliminarMiCuenta']);
+    Route::post('/perfil/foto', [UserController::class, 'fotoPerfil']);
 
 
 });

@@ -10,10 +10,10 @@ class Socio extends Model
 {
     use SoftDeletes;
 
-    protected $primaryKey = 'cedula'; 
-    public $incrementing = false; 
-    protected $keyType = 'string'; 
-    
+    protected $primaryKey = 'cedula';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
 
     protected $fillable = [
         'cedula',
@@ -25,6 +25,7 @@ class Socio extends Model
         'departamento',
         'ciudad',
         'email',
+        'foto_perfil',
         'contraseña',
         'ingreso_mensual',
         'situacion_laboral',

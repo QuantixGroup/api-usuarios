@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 use Lcobucci\JWT\Parser;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -17,14 +18,29 @@ class UserController extends Controller
     public function verMiPerfil(Request $request)
     {
         $personaUsuaria = $request->user();
+        $socio = \App\Models\Socio::where('cedula', $personaUsuaria->cedula)->first();
+
+        if (!$socio) {
+            return response()->json(['error' => 'Socio no encontrado'], 404);
+        }
 
         return response()->json([
-            'identificador' => $personaUsuaria->id,
-            'cedula'        => $personaUsuaria->cedula,
-            'nombre'        => $personaUsuaria->name ?? $personaUsuaria->nombre ?? null,
-            'email'         => $personaUsuaria->email,
-            'telefono'      => $personaUsuaria->telefono ?? null,
-            'direccion'     => $personaUsuaria->direccion ?? null,
+            'identificador' => $socio->id ?? null,
+            'cedula' => $socio->cedula ?? null,
+            'nombre' => $socio->nombre ?? null,
+            'apellido' => $socio->apellido ?? null,
+            'fecha_nacimiento' => $socio->fecha_nacimiento ?? null,
+            'telefono' => $socio->telefono ?? null,
+            'direccion' => $socio->direccion ?? null,
+            'departamento' => $socio->departamento ?? null,
+            'ciudad' => $socio->ciudad ?? null,
+            'email' => $socio->email ?? null,
+            'ingresos_mensuales' => $socio->ingreso_mensual ?? null,
+            'situacion_laboral' => $socio->situacion_laboral ?? null,
+            'estado_civil' => '',
+            'nucleo_familiar' => $socio->integrantes_familiares ?? null,
+            'cantidad_integrantes' => $socio->integrantes_familiares ?? null,
+            'foto_perfil' => $socio->foto_perfil ? url(Storage::url($socio->foto_perfil)) : null,
         ]);
     }
 
@@ -33,10 +49,10 @@ class UserController extends Controller
         $personaUsuaria = $request->user();
 
         $datos = $request->validate([
-            'nombre'    => ['sometimes','string','max:100'],
-            'telefono'  => ['sometimes','string','max:50'],
-            'direccion' => ['sometimes','string','max:255'],
-            'email'     => ['sometimes','email','max:255','unique:users,email,'.$personaUsuaria->id],
+            'nombre' => ['sometimes', 'string', 'max:100'],
+            'telefono' => ['sometimes', 'string', 'max:50'],
+            'direccion' => ['sometimes', 'string', 'max:255'],
+            'email' => ['sometimes', 'email', 'max:255', 'unique:users,email,' . $personaUsuaria->id],
         ]);
 
         if (isset($datos['nombre'])) {
@@ -54,11 +70,11 @@ class UserController extends Controller
         $personaUsuaria = $request->user();
 
         $datos = $request->validate([
-            'contrasena_actual'             => ['required','string'],
-            'contrasena_nueva'              => ['required','string','min:8','confirmed'],
+            'contrasena_actual' => ['required', 'string'],
+            'contrasena_nueva' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        if (! Hash::check($datos['contrasena_actual'], $personaUsuaria->password)) {
+        if (!Hash::check($datos['contrasena_actual'], $personaUsuaria->password)) {
             return response()->json(['error' => 'La contraseña actual no coincide'], 422);
         }
 
@@ -100,5 +116,49 @@ class UserController extends Controller
 
     }
 
+    public function fotoPerfil(Request $request)
+    {
+        $personaUsuaria = $request->user();
+
+        $validator = Validator::make($request->all(), [
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'El archivo debe ser una imagen válida (JPG, PNG, GIF) de máximo 2MB',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        if (request()->hasFile('foto')) {
+            $file = request()->file('foto');
+            $path = $file->store('fotos_perfil', 'public');
+
+            $socio = \App\Models\Socio::where('cedula', $personaUsuaria->cedula)->first();
+            if (!$socio) {
+                return response()->json(['error' => 'Socio no encontrado'], 404);
+            }
+
+            if ($socio->foto_perfil && Storage::disk('public')->exists($socio->foto_perfil)) {
+                Storage::disk('public')->delete($socio->foto_perfil);
+            }
+
+            $socio->foto_perfil = $path;
+            $socio->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto de perfil actualizada correctamente',
+                'url_foto' => url(Storage::url($path))
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se ha subido ninguna foto'
+            ], 400);
+        }
+    }
 
 }
