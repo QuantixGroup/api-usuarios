@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
-
-
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -37,8 +35,7 @@ class UserController extends Controller
             'email' => $socio->email ?? null,
             'ingresos_mensuales' => $socio->ingreso_mensual ?? null,
             'situacion_laboral' => $socio->situacion_laboral ?? null,
-            'estado_civil' => '',
-            'nucleo_familiar' => $socio->integrantes_familiares ?? null,
+            'estado_civil' => $socio->estado_civil ?? null,
             'cantidad_integrantes' => $socio->integrantes_familiares ?? null,
             'foto_perfil' => $socio->foto_perfil ? url(Storage::url($socio->foto_perfil)) : null,
         ]);
@@ -61,6 +58,39 @@ class UserController extends Controller
         }
 
         $personaUsuaria->fill($datos)->save();
+
+        try {
+            $socio = \App\Models\Socio::where('cedula', $personaUsuaria->cedula)->first();
+            if ($socio) {
+                $socioChanged = false;
+
+                if ($request->has('ingresos_mensuales')) {
+                    $socio->ingreso_mensual = $request->post('ingresos_mensuales');
+                    $socioChanged = true;
+                }
+
+                if ($request->has('situacion_laboral')) {
+                    $socio->situacion_laboral = $request->post('situacion_laboral');
+                    $socioChanged = true;
+                }
+
+                if ($request->has('cantidad_integrantes')) {
+                    $socio->integrantes_familiares = $request->post('cantidad_integrantes');
+                    $socioChanged = true;
+                }
+
+                if ($request->has('estado_civil')) {
+                    $socio->estado_civil = $request->post('estado_civil');
+                    $socioChanged = true;
+                }
+
+                if ($socioChanged) {
+                    $socio->save();
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Error guardando datos de socio desde actualizarMiPerfil: ' . $e->getMessage());
+        }
 
         return response()->json(['message' => 'Perfil actualizado']);
     }

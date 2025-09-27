@@ -29,10 +29,12 @@ class Socio extends Model
         'contraseña',
         'ingreso_mensual',
         'situacion_laboral',
+        'estado_civil',
         'estado',
         'integrantes_familiares',
         'fecha_ingreso',
         'fecha_egreso',
+        'motivacion',
     ];
 
 
