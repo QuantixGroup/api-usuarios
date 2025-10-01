@@ -23,13 +23,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
-
-      - name: Preflight: check PHP and composer platform
-        run: |
-          php -v
-          composer --version
-          composer check-platform-reqs
+          php-version: "8.4"
 
       - name: Add Flux Credentials Loaded From ENV
         run: composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
@@ -38,7 +32,6 @@ jobs:
         run: |
           composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
           npm install
-
       - name: Run Pint
         run: vendor/bin/pint
 
