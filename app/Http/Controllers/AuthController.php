@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use App\Models\Socio;
+use App\Models\User;
 use Illuminate\Http\Request as HttpRequest;
 
 use Illuminate\Http\Request;
@@ -18,22 +19,28 @@ class AuthController extends Controller
             'contrasena' => ['required', 'string'],
         ]);
 
-        $client = DB::table('oauth_clients')
-            ->where('password_client', true)
-            ->orderBy('created_at', 'desc')
-            ->first();
-
-        if ($client) {
-            $clientId = $client->id;
-            $clientSecret = $client->secret;
-        } else {
-            $clientId = config('services.passport.password_client_id');
-            $clientSecret = config('services.passport.password_client_secret');
-        }
-
         $socio = Socio::where('cedula', $data['cedula'])->first();
         if (!$socio || $socio->estado !== 'aprobado') {
             return response()->json(['error' => 'Usuario no aprobado'], 403);
+        }
+
+        $usuario = User::where('cedula', $socio->cedula)->first();
+        if ($usuario) {
+            $client = DB::table('oauth_clients')
+                ->where('user_id', $usuario->id)
+                ->where('password_client', true)
+                ->where('revoked', false)
+                ->first();
+
+            if ($client) {
+                $clientId = $client->id;
+                $clientSecret = $client->secret;
+            }
+        }
+
+        if (empty($clientId)) {
+            $clientId = config('services.passport.password_client_id');
+            $clientSecret = config('services.passport.password_client_secret');
         }
 
         $params = [
