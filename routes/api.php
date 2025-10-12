@@ -38,8 +38,10 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/perfil', [UserController::class, 'eliminarMiCuenta']);
 
 
+
 });
 
+Route::get('/validate', [UserController::class, "ValidateToken"]);
 
-Route::get('/validate', [UserController::class, "ValidateToken"])->middleware('auth:api');
-Route::get('/logout', [UserController::class, "Logout"])->middleware('auth:api');
+
+

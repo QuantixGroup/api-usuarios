@@ -19,7 +19,7 @@ class AuthController extends Controller
     $params = [
         'grant_type'    => 'password',
         'client_id'     => 2,
-        'client_secret' => 'ERmJxTnr1upAMCP582crunhkrhPCEEZafQXyM43z',
+        'client_secret' => 'WpPkGIKUnw1asp7TuyTZNqe7YlEAtbWhCkX6P5aQ',
         'username'      => $data['cedula'],
         'password'      => $data['contrasena'],
     ];

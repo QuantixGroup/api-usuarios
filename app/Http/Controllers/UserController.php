@@ -19,12 +19,12 @@ class UserController extends Controller
         $personaUsuaria = $request->user();
 
         return response()->json([
-            'identificador' => $personaUsuaria->id,
-            'cedula'        => $personaUsuaria->cedula,
-            'nombre'        => $personaUsuaria->name ?? $personaUsuaria->nombre ?? null,
-            'email'         => $personaUsuaria->email,
-            'telefono'      => $personaUsuaria->telefono ?? null,
-            'direccion'     => $personaUsuaria->direccion ?? null,
+            'id' => $personaUsuaria->id,
+            'cedula' => $personaUsuaria->cedula,
+            'nombre' => $personaUsuaria->name ?? $personaUsuaria->nombre ?? null,
+            'email' => $personaUsuaria->email,
+            'telefono' => $personaUsuaria->telefono ?? null,
+            'direccion' => $personaUsuaria->direccion ?? null,
         ]);
     }
 
@@ -33,10 +33,10 @@ class UserController extends Controller
         $personaUsuaria = $request->user();
 
         $datos = $request->validate([
-            'nombre'    => ['sometimes','string','max:100'],
-            'telefono'  => ['sometimes','string','max:50'],
-            'direccion' => ['sometimes','string','max:255'],
-            'email'     => ['sometimes','email','max:255','unique:users,email,'.$personaUsuaria->id],
+            'nombre' => ['sometimes', 'string', 'max:100'],
+            'telefono' => ['sometimes', 'string', 'max:50'],
+            'direccion' => ['sometimes', 'string', 'max:255'],
+            'email' => ['sometimes', 'email', 'max:255', 'unique:users,email,' . $personaUsuaria->id],
         ]);
 
         if (isset($datos['nombre'])) {
@@ -54,11 +54,11 @@ class UserController extends Controller
         $personaUsuaria = $request->user();
 
         $datos = $request->validate([
-            'contrasena_actual'             => ['required','string'],
-            'contrasena_nueva'              => ['required','string','min:8','confirmed'],
+            'contrasena_actual' => ['required', 'string'],
+            'contrasena_nueva' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        if (! Hash::check($datos['contrasena_actual'], $personaUsuaria->password)) {
+        if (!Hash::check($datos['contrasena_actual'], $personaUsuaria->password)) {
             return response()->json(['error' => 'La contraseña actual no coincide'], 422);
         }
 
@@ -86,19 +86,15 @@ class UserController extends Controller
         $user = auth('api')->user();
 
         return response()->json([
-            'nombre' => $user->name,
-            'rol' => $user->rol
+            'id' => $user->id,
+            'cedula' => $user->cedula ,
+            'nombre' => $user->name ?? $user->nombre ?? null,
+            'email' => $user->email ?? null,
+            'rol' => $user->rol ?? null,
         ]);
     }
 
 
-    public function Logout(Request $request)
-    {
-        $request->user()->token()->revoke();
-        return ['message' => 'Token Revoked'];
-
-
-    }
 
 
 }
