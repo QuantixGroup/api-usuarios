@@ -14,17 +14,21 @@ class CreateRegistrosHorasTable extends Migration
     public function up()
     {
         Schema::create('registros_horas', function (Blueprint $table) {
-            $table->id('id_horas');
+            $table->id();
             $table->string('cedula');
-            $table->integer('conteo_de_horas');
             $table->date('fecha');
+            $table->decimal('conteo_de_horas', 5, 2);
+            $table->string('tipo_trabajo')->nullable();
+            $table->text('descripcion')->nullable();
             $table->string('comprobante_compensacion')->nullable();
             $table->decimal('monto_compensacion', 10, 2)->nullable();
             $table->date('fecha_compensacion')->nullable();
-            $table->enum('estado', ['pendiente', 'aprobado', 'rechazado']);
+            $table->enum('estado', ['pendiente', 'aprobado', 'rechazado'])->default('pendiente');
             $table->timestamps();
 
             $table->foreign('cedula')->references('cedula')->on('socios')->onDelete('cascade');
+            $table->index('cedula');
+            $table->index('fecha');
         });
     }
 

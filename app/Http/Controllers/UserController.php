@@ -132,6 +132,7 @@ class UserController extends Controller
         $user = auth('api')->user();
 
         return response()->json([
+            'cedula' => $user->cedula,
             'nombre' => $user->name,
             'rol' => $user->rol
         ]);
