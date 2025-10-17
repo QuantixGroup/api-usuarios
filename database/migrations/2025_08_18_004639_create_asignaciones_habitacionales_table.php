@@ -14,7 +14,7 @@ class CreateAsignacionesHabitacionalesTable extends Migration
     public function up()
     {
         Schema::create('asignaciones_habitacionales', function (Blueprint $table) {
-            $table->string('cedula');
+            $table->unsignedInteger('cedula');
             $table->unsignedBigInteger('id_unidad');
             $table->date('fecha_asignacion');
             $table->enum('estado', ['pendiente', 'aprobado', 'rechazado']);

@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('socios', function (Blueprint $table) {
             $table->id();
-            $table->string('cedula')->unique();
+            $table->unsignedInteger('cedula')->unique();
             $table->string('nombre');
             $table->string('apellido');
             $table->date('fecha_nacimiento');
@@ -27,14 +27,13 @@ return new class extends Migration {
             $table->enum('situacion_laboral', ['Empleado/a', 'Desempleado/a', 'Independiente']);
             $table->enum('estado', ['pendiente', 'aprobado', 'rechazado'])->default('pendiente');
             $table->string('estado_civil')->nullable();
-            $table->enum('integrantes_familiares', ['1', '2', '3', '4+']);
+            $table->enum('integrantes_familiares', ['1', '2', '3', '4+'])->nullable(false);
             $table->date('fecha_ingreso')->nullable();
             $table->date('fecha_egreso')->nullable();
             $table->text('motivacion')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
-
     }
 
     /**

@@ -29,18 +29,14 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/socios/{id}', [SocioController::class, 'mostrar']);
     Route::put('/socios/{id}', [SocioController::class, 'actualizar']);
     Route::delete('/socios/{id}', [SocioController::class, 'eliminar']);
-
     Route::post('/cerrar-sesion', [AuthController::class, 'logout']);
-
     Route::get('/perfil', [UserController::class, 'verMiPerfil']);
     Route::put('/perfil', [UserController::class, 'actualizarMiPerfil']);
     Route::put('/perfil/contrasena', [UserController::class, 'cambiarMiContrasena']);
     Route::delete('/perfil', [UserController::class, 'eliminarMiCuenta']);
     Route::post('/perfil/foto', [UserController::class, 'fotoPerfil']);
 
-
 });
-
 
 Route::get('/validate', [UserController::class, "ValidateToken"])->middleware('auth:api');
 Route::get('/logout', [UserController::class, "Logout"])->middleware('auth:api');

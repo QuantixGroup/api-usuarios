@@ -15,8 +15,8 @@ class CreateAprobacionesAdministrativasTable extends Migration
     {
         Schema::create('aprobaciones_administrativas', function (Blueprint $table) {
             $table->id('id_consulta');
-            $table->string('cedula_adm');
-            $table->string('cedula_socio');
+            $table->unsignedInteger('cedula_adm');
+            $table->unsignedInteger('cedula_socio');
             $table->date('fecha');
             $table->enum('tipo', ['registro', 'aporte', 'pago', 'compensacion']);
             $table->enum('estado', ['pendiente', 'aprobado', 'rechazado']);

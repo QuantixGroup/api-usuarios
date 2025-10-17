@@ -19,12 +19,7 @@ class DatabaseSeeder extends Seeder
             SociosTableSeeder::class,
             AdminsTableSeeder::class,
         ]);
-
-        \App\Models\User::factory(10)->create();
-        \App\Models\User::factory(1)->create([
-            "name" => "usuario",
-            "email" => "usuario@email.com"
-        ]);
+        \App\Models\Socio::factory(10)->create();
 
         Client::create([
             'id' => 100,

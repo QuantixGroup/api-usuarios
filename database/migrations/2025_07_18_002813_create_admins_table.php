@@ -17,7 +17,7 @@ class CreateAdminsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('apellido');
-            $table->string('cedula')->unique();
+            $table->unsignedInteger('cedula')->unique();
             $table->string('email')->unique();
             $table->date('fecha_nacimiento')->nullable();
             $table->timestamp('email_verified_at')->nullable();

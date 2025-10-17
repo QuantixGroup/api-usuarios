@@ -89,7 +89,6 @@ class UserController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            Log::error('Error guardando datos de socio desde actualizarMiPerfil: ' . $e->getMessage());
         }
 
         return response()->json(['message' => 'Perfil actualizado']);
@@ -143,8 +142,6 @@ class UserController extends Controller
     {
         $request->user()->token()->revoke();
         return ['message' => 'Token Revoked'];
-
-
     }
 
     public function fotoPerfil(Request $request)

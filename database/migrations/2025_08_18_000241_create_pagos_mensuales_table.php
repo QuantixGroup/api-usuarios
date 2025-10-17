@@ -15,7 +15,7 @@ class CreatePagosMensualesTable extends Migration
     {
         Schema::create('pagos_mensuales', function (Blueprint $table) {
             $table->id('id_pago');
-            $table->string('cedula');
+            $table->unsignedInteger('cedula');
             $table->decimal('monto', 10, 2);
             $table->date('fecha_comprobante');
             $table->string('archivo_comprobante')->nullable();

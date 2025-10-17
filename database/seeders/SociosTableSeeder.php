@@ -24,7 +24,10 @@ class SociosTableSeeder extends Seeder
                 'ingreso_mensual' => 50000,
                 'situacion_laboral' => 'Empleado/a',
                 'fecha_nacimiento' => '1990-05-15',
-                'estado' => 'pendiente'
+                'estado_civil' => 'Soltera',
+                'integrantes_familiares' => '2',
+                'estado' => 'pendiente',
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             ]);
         }
 
@@ -42,7 +45,10 @@ class SociosTableSeeder extends Seeder
                 'ingreso_mensual' => 45000,
                 'situacion_laboral' => 'Independiente',
                 'fecha_nacimiento' => '1985-03-20',
-                'estado' => 'pendiente'
+                'estado_civil' => 'Casado',
+                'integrantes_familiares' => '4+',
+                'estado' => 'pendiente',
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             ]);
         }
 
@@ -55,12 +61,15 @@ class SociosTableSeeder extends Seeder
                 'contraseña' => '33334444',
                 'telefono' => '0976543210',
                 'direccion' => 'Bvar. Artigas 789',
-                'departamento' => 'Montevideo',
-                'ciudad' => 'Pocitos',
+                'departamento' => 'Colonia',
+                'ciudad' => 'Juan Lacaze',
                 'ingreso_mensual' => 60000,
                 'situacion_laboral' => 'Empleado/a',
                 'fecha_nacimiento' => '1992-11-08',
-                'estado' => 'pendiente'
+                'estado_civil' => 'Divorciada',
+                'integrantes_familiares' => '3',
+                'estado' => 'pendiente',
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
             ]);
         }
 
@@ -78,7 +87,10 @@ class SociosTableSeeder extends Seeder
                 'ingreso_mensual' => 55000,
                 'situacion_laboral' => 'Empleado/a',
                 'fecha_nacimiento' => '1975-07-12',
-                'estado' => 'pendiente'
+                'estado_civil' => 'Casado',
+                'integrantes_familiares' => '3',
+                'estado' => 'pendiente',
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
             ]);
         }
 
@@ -91,12 +103,15 @@ class SociosTableSeeder extends Seeder
                 'contraseña' => '55556666',
                 'telefono' => '0954321098',
                 'direccion' => 'José Batlle y Ordóñez 567',
-                'departamento' => 'Montevideo',
-                'ciudad' => 'Carrasco',
+                'departamento' => 'Salto',
+                'ciudad' => 'Salto',
                 'ingreso_mensual' => 65000,
                 'situacion_laboral' => 'Empleado/a',
                 'fecha_nacimiento' => '1988-02-28',
-                'estado' => 'pendiente'
+                'estado_civil' => 'Soltera',
+                'integrantes_familiares' => '1',
+                'estado' => 'pendiente',
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
             ]);
         }
 
@@ -114,7 +129,10 @@ class SociosTableSeeder extends Seeder
                 'ingreso_mensual' => 48000,
                 'situacion_laboral' => 'Independiente',
                 'fecha_nacimiento' => '1982-09-15',
-                'estado' => 'pendiente'
+                'estado_civil' => 'Viudo',
+                'integrantes_familiares' => '2',
+                'estado' => 'pendiente',
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
             ]);
         }
 
@@ -128,11 +146,56 @@ class SociosTableSeeder extends Seeder
                 'telefono' => '0932109876',
                 'direccion' => 'Av. Rivera 1234',
                 'departamento' => 'Montevideo',
-                'ciudad' => 'Buceo',
-                'ingreso_mensual' => 72000,
+                'ciudad' => 'Montevideo',
+                'ingreso_mensual' => 42000,
                 'situacion_laboral' => 'Empleado/a',
                 'fecha_nacimiento' => '1995-12-03',
-                'estado' => 'pendiente'
+                'estado_civil' => 'Soltera',
+                'integrantes_familiares' => '1',
+                'estado' => 'pendiente',
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            ]);
+        }
+
+        if (!Socio::where('cedula', '88889999')->exists()) {
+            Socio::create([
+                'cedula' => '88889999',
+                'nombre' => 'Jorge',
+                'apellido' => 'Gómez',
+                'email' => 'jorge.gomez@example.com',
+                'contraseña' => '88889999',
+                'telefono' => '0921098765',
+                'direccion' => 'Calle 8 de Octubre 2345',
+                'departamento' => 'Montevideo',
+                'ciudad' => 'Montevideo',
+                'ingreso_mensual' => 70000,
+                'situacion_laboral' => 'Empleado/a',
+                'fecha_nacimiento' => '1978-06-25',
+                'estado_civil' => 'Casado',
+                'integrantes_familiares' => '4+',
+                'estado' => 'pendiente',
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+            ]);
+        }
+
+        if (!Socio::where('cedula', '99990000')->exists()) {
+            Socio::create([
+                'cedula' => '99990000',
+                'nombre' => 'Sofía',
+                'apellido' => 'Díaz',
+                'email' => 'sofia.diaz@example.com',
+                'contraseña' => '99990000',
+                'telefono' => '0912345678',
+                'direccion' => 'Calle 9 de Julio 1234',
+                'departamento' => 'Montevideo',
+                'ciudad' => 'Montevideo',
+                'ingreso_mensual' => 75000,
+                'situacion_laboral' => 'Empleado/a',
+                'fecha_nacimiento' => '1985-03-15',
+                'estado_civil' => 'Divorciada',
+                'integrantes_familiares' => '2',
+                'estado' => 'pendiente',
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
             ]);
         }
     }

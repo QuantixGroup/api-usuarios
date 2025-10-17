@@ -15,7 +15,7 @@ class CreateRegistrosHorasTable extends Migration
     {
         Schema::create('registros_horas', function (Blueprint $table) {
             $table->id();
-            $table->string('cedula');
+            $table->unsignedInteger('cedula');
             $table->date('fecha');
             $table->decimal('conteo_de_horas', 5, 2);
             $table->string('tipo_trabajo')->nullable();
