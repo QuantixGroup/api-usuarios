@@ -108,6 +108,7 @@ class UserController extends Controller
         }
 
         $personaUsuaria->password = Hash::make($datos['contrasena_nueva']);
+        $personaUsuaria->primer_inicio = false;
         $personaUsuaria->save();
 
         return response()->json(['message' => 'Contraseña actualizada']);

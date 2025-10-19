@@ -26,6 +26,7 @@ class User extends Authenticatable
         'cedula',
         'email',
         'password',
+        'primer_inicio',
     ];
 
     /**

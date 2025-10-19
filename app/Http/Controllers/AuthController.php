@@ -58,7 +58,14 @@ class AuthController extends Controller
 
         $res = app()->handle($sub);
 
-        return response($res->getContent(), $res->getStatusCode())
+        $responseData = json_decode($res->getContent(), true);
+
+        if ($res->getStatusCode() === 200 && isset($responseData['access_token'])) {
+            $primerInicio = $usuario ? $usuario->primer_inicio : true;
+            $responseData['primer_inicio'] = $primerInicio;
+        }
+
+        return response()->json($responseData, $res->getStatusCode())
             ->withHeaders($res->headers->all());
     }
 
