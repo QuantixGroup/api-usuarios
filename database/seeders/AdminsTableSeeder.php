@@ -20,6 +20,7 @@ class AdminsTableSeeder extends Seeder
             'fecha_ingreso' => now(),
             'email' => 'laura.administracion@covimt17.org',
             'password' => Hash::make('87654321'),
+            'primer_password' => true,
         ]);
     }
 }
