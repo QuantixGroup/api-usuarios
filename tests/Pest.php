@@ -5,14 +5,14 @@
 | Test Case
 |--------------------------------------------------------------------------
 |
-| The closure you provide to your test functions is always bound to a specific PHPUnit test
-| case class. By default, that class is "PHPUnit\Framework\TestCase". Of course, you may
-| need to change it using the "pest()" function to bind a different classes or traits.
+| Bind the base test case class and traits to Pest tests. We use the built-in
+| `uses()` helper which is available in Pest's core instead of `pest()->extend()`
+| (some environments don't expose the latter helper). This keeps the file
+| compatible with the installed Pest version.
 |
 */
 
-pest()->extend(Tests\TestCase::class)
-    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+uses(Tests\TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
 
 /*
