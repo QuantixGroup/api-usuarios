@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -57,9 +58,11 @@ class UserController extends Controller
             unset($datos['nombre']);
         }
 
-        $personaUsuaria->fill($datos)->save();
-
         try {
+            DB::beginTransaction();
+
+            $personaUsuaria->fill($datos)->save();
+
             $socio = \App\Models\Socio::where('cedula', $personaUsuaria->cedula)->first();
             if ($socio) {
                 $socioChanged = false;
@@ -88,8 +91,12 @@ class UserController extends Controller
                     $socio->save();
                 }
             }
+
+            DB::commit();
         } catch (\Exception $e) {
-            Log::error('Error guardando datos de socio desde actualizarMiPerfil: ' . $e->getMessage());
+            DB::rollBack();
+            Log::error('Error actualizando perfil de usuario ' . ($personaUsuaria->id ?? 'n/a') . ': ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json(['error' => 'Ocurrió un error al actualizar el perfil'], 500);
         }
 
         return response()->json(['message' => 'Perfil actualizado']);
@@ -109,22 +116,10 @@ class UserController extends Controller
         }
 
         $personaUsuaria->password = Hash::make($datos['contrasena_nueva']);
+        $personaUsuaria->primer_inicio = false;
         $personaUsuaria->save();
 
         return response()->json(['message' => 'Contraseña actualizada']);
-    }
-
-    public function eliminarMiCuenta(Request $request)
-    {
-        $personaUsuaria = $request->user();
-
-        foreach ($personaUsuaria->tokens as $token) {
-            $token->revoke();
-        }
-
-        $personaUsuaria->delete();
-
-        return response()->json(['message' => 'Cuenta desactivada']);
     }
 
     public function ValidateToken(Request $request)
@@ -132,18 +127,16 @@ class UserController extends Controller
         $user = auth('api')->user();
 
         return response()->json([
+            'cedula' => $user->cedula,
             'nombre' => $user->name,
             'rol' => $user->rol
         ]);
     }
 
-
     public function Logout(Request $request)
     {
         $request->user()->token()->revoke();
         return ['message' => 'Token Revoked'];
-
-
     }
 
     public function fotoPerfil(Request $request)
@@ -164,25 +157,38 @@ class UserController extends Controller
 
         if (request()->hasFile('foto')) {
             $file = request()->file('foto');
-            $path = $file->store('fotos_perfil', 'public');
 
-            $socio = \App\Models\Socio::where('cedula', $personaUsuaria->cedula)->first();
-            if (!$socio) {
-                return response()->json(['error' => 'Socio no encontrado'], 404);
+            DB::beginTransaction();
+            try {
+                $path = $file->store('fotos_perfil', 'public');
+
+                $socio = \App\Models\Socio::where('cedula', $personaUsuaria->cedula)->first();
+                if (!$socio) {
+                    return response()->json(['error' => 'Socio no encontrado'], 404);
+                }
+
+                if ($socio->foto_perfil && Storage::disk('public')->exists($socio->foto_perfil)) {
+                    Storage::disk('public')->delete($socio->foto_perfil);
+                }
+
+                $socio->foto_perfil = $path;
+                $socio->save();
+
+                DB::commit();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Foto de perfil actualizada correctamente',
+                    'url_foto' => url(Storage::url($path))
+                ]);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Error al subir foto de perfil: ' . $e->getMessage(), ['exception' => $e]);
+
+                if (isset($path) && Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->delete($path);
+                }
+                return response()->json(['error' => 'Error al subir foto'], 500);
             }
-
-            if ($socio->foto_perfil && Storage::disk('public')->exists($socio->foto_perfil)) {
-                Storage::disk('public')->delete($socio->foto_perfil);
-            }
-
-            $socio->foto_perfil = $path;
-            $socio->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Foto de perfil actualizada correctamente',
-                'url_foto' => url(Storage::url($path))
-            ]);
         } else {
             return response()->json([
                 'success' => false,

@@ -16,30 +16,38 @@ class SocioController extends Controller
 
     public function insertar(Request $request)
     {
-        $socio = new Socio();
+        $validated = $request->validate([
+            'cedula' => 'required|unique:socios,cedula',
+            'nombre' => 'required|string',
+            'apellido' => 'required|string',
+            'email' => 'required|email|unique:socios,email',
+            'telefono' => 'nullable|string',
+            'direccion' => 'nullable|string',
+            'fecha_nacimiento' => 'nullable|date',
+            'departamento' => 'nullable|string',
+            'ciudad' => 'nullable|string',
+            'ingreso_mensual' => 'nullable|numeric',
+            'situacion_laboral' => 'nullable|string',
+            'integrantes_familiares' => 'nullable',
+            'fecha_ingreso' => 'nullable|date',
+            'fecha_egreso' => 'nullable|date',
+            'mensaje' => 'nullable|string',
+        ]);
 
-        $socio->cedula = $request->post("cedula");
-        $socio->nombre = $request->post("nombre");
-        $socio->apellido = $request->post("apellido");
-        $socio->telefono = $request->post("telefono");
-        $socio->direccion = $request->post("direccion");
-        $socio->fecha_nacimiento = $request->post("fecha_nacimiento");
-        $socio->departamento = $request->post("departamento");
-        $socio->ciudad = $request->post("ciudad");
-        $socio->email = $request->post("email");
-        $socio->ingreso_mensual = $request->post("ingreso_mensual");
-        $socio->situacion_laboral = $request->post("situacion_laboral");
-        $socio->estado = 'pendiente';
-        $socio->integrantes_familiares = $request->post("integrantes_familiares");
-        if ($request->has('mensaje')) {
-            $socio->motivacion = $request->post('mensaje');
+        $data = $validated;
+        $data['estado'] = 'pendiente';
+        if (isset($validated['mensaje'])) {
+            $data['motivacion'] = $validated['mensaje'];
+            unset($data['mensaje']);
         }
-        $socio->fecha_ingreso = $request->post("fecha_ingreso");
-        $socio->fecha_egreso = $request->post("fecha_egreso");
-        $password = $request->post('contraseña') ?? $request->post('cedula');
-        $socio->save();
 
-        return $socio;
+        if (!isset($data['contraseña'])) {
+            $data['contraseña'] = $data['cedula'];
+        }
+
+        $socio = Socio::create($data);
+
+        return response()->json($socio, 201);
     }
 
     public function mostrar($id)
@@ -53,44 +61,38 @@ class SocioController extends Controller
     {
         $socio = Socio::findOrFail($id);
 
-        if ($request->has('cedula'))
-            $socio->cedula = $request->post("cedula");
-        if ($request->has('nombre'))
-            $socio->nombre = $request->post("nombre");
-        if ($request->has('apellido'))
-            $socio->apellido = $request->post("apellido");
-        if ($request->has('telefono'))
-            $socio->telefono = $request->post("telefono");
-        if ($request->has('direccion'))
-            $socio->direccion = $request->post("direccion");
-        if ($request->has('fecha_nacimiento'))
-            $socio->fecha_nacimiento = $request->post("fecha_nacimiento");
-        if ($request->has('departamento'))
-            $socio->departamento = $request->post("departamento");
-        if ($request->has('ciudad'))
-            $socio->ciudad = $request->post("ciudad");
-        if ($request->has('email'))
-            $socio->email = $request->post("email");
-        if ($request->has('ingreso_mensual'))
-            $socio->ingreso_mensual = $request->post("ingreso_mensual");
-        if ($request->has('situacion_laboral'))
-            $socio->situacion_laboral = $request->post("situacion_laboral");
-        if ($request->has('integrantes_familiares'))
-            $socio->integrantes_familiares = $request->post("integrantes_familiares");
-        if ($request->has('fecha_ingreso'))
-            $socio->fecha_ingreso = $request->post("fecha_ingreso");
-        if ($request->has('fecha_egreso'))
-            $socio->fecha_egreso = $request->post("fecha_egreso");
-        if ($request->has('estado'))
-            $socio->estado = $request->post("estado");
+        $validated = $request->validate([
+            'cedula' => 'sometimes|unique:socios,cedula,' . $socio->cedula . ',cedula',
+            'nombre' => 'sometimes|string',
+            'apellido' => 'sometimes|string',
+            'email' => 'sometimes|email|unique:socios,email,' . $socio->cedula . ',cedula',
+            'telefono' => 'sometimes|string',
+            'direccion' => 'sometimes|string',
+            'fecha_nacimiento' => 'sometimes|date',
+            'departamento' => 'sometimes|string',
+            'ciudad' => 'sometimes|string',
+            'ingreso_mensual' => 'sometimes|numeric',
+            'situacion_laboral' => 'sometimes|string',
+            'integrantes_familiares' => 'sometimes',
+            'fecha_ingreso' => 'sometimes|date',
+            'fecha_egreso' => 'sometimes|date',
+            'estado' => 'sometimes|string',
+        ]);
 
+        foreach ($validated as $key => $value) {
+            if ($key === 'mensaje') {
+                $socio->motivacion = $value;
+                continue;
+            }
+            $socio->$key = $value;
+        }
 
         $socio->save();
 
         return response()->json([
             'message' => 'Socio actualizado',
             'socio' => $socio
-        ]);
+        ], 200);
     }
 
     public function eliminar($id)

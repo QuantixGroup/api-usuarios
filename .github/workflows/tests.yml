@@ -3,17 +3,18 @@ name: tests
 on:
   push:
     branches:
-      - develop
+      - test
       - main
   pull_request:
     branches:
-      - develop
       - main
 
 jobs:
-  ci:
+  tests:
     runs-on: ubuntu-latest
-    environment: Testing
+    env:
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ":memory:"
 
     steps:
       - name: Checkout
@@ -25,6 +26,7 @@ jobs:
           php-version: "8.2"
           tools: composer:v2
           coverage: xdebug
+          extensions: pdo, pdo_sqlite
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -43,6 +45,14 @@ jobs:
 
       - name: Generate Application Key
         run: php artisan key:generate
+
+      - name: Generate Passport keys
+        run: php artisan passport:keys --force
+
+      - name: Configure Database
+        run: |
+          php artisan config:clear
+          php artisan cache:clear
 
       - name: Build Assets
         run: npm run production

@@ -15,11 +15,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\User::factory(10)->create();
-        \App\Models\User::factory(1)->create([
-            "name" => "usuario",
-            "email" => "usuario@email.com"
+        $this->call([
+            SociosTableSeeder::class,
+            AdminsTableSeeder::class,
         ]);
+        \App\Models\Socio::factory(10)->create();
 
         Client::create([
             'id' => 100,

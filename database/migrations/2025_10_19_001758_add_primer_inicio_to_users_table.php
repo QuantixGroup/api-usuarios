@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFotoPerfilToSociosTable extends Migration
+class AddPrimerInicioToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddFotoPerfilToSociosTable extends Migration
      */
     public function up()
     {
-        Schema::table('socios', function (Blueprint $table) {
-            $table->string('foto_perfil')->nullable()->after('email');
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('primer_inicio')->default(true)->after('password');
         });
     }
 
@@ -25,8 +25,8 @@ class AddFotoPerfilToSociosTable extends Migration
      */
     public function down()
     {
-        Schema::table('socios', function (Blueprint $table) {
-            $table->dropColumn('foto_perfil');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('primer_inicio');
         });
     }
 }

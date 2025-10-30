@@ -10,7 +10,6 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Hash;
 
-
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -22,12 +21,12 @@ class User extends Authenticatable
      */
     protected $table = 'users';
     protected $fillable = [
-        'name',
+        'nombre',
+        'apellido',
         'cedula',
         'email',
         'password',
-        'telefono',
-        'direccion'
+        'primer_inicio',
     ];
 
     /**
@@ -53,5 +52,4 @@ class User extends Authenticatable
     {
         return $this->where('cedula', $username)->first();
     }
-
 }
