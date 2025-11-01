@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Livewire\Volt\Volt;
 
 class VoltServiceProvider extends ServiceProvider
 {
@@ -20,6 +19,6 @@ class VoltServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-    //
+        //
     }
 }

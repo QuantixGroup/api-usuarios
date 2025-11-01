@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Socio;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class SociosApiTest extends TestCase
 {
@@ -37,7 +37,7 @@ class SociosApiTest extends TestCase
 
         $payload = ['nombre' => 'Sin Auth'];
 
-        $response = $this->putJson('/api/socios/' . $socio->cedula, $payload);
+        $response = $this->putJson('/api/socios/'.$socio->cedula, $payload);
 
         $response->assertStatus(401);
     }
@@ -50,12 +50,10 @@ class SociosApiTest extends TestCase
         $response = $this->postJson('/api/socios', $payload);
         $response->assertStatus(422)->assertJsonValidationErrors(['cedula']);
 
-
         $payload = Socio::factory()->make()->toArray();
         $payload['email'] = 'not-an-email';
         $response = $this->postJson('/api/socios', $payload);
         $response->assertStatus(422)->assertJsonValidationErrors(['email']);
-
 
         $existing = Socio::factory()->create();
         $payload = Socio::factory()->make(['cedula' => $existing->cedula])->toArray();
@@ -72,7 +70,7 @@ class SociosApiTest extends TestCase
 
         $payload = ['nombre' => 'Nombre Actualizado', 'email' => 'nuevoemail@example.com'];
 
-        $response = $this->putJson('/api/socios/' . $socio->cedula, $payload);
+        $response = $this->putJson('/api/socios/'.$socio->cedula, $payload);
 
         $response->assertStatus(200)
             ->assertJsonFragment(['nombre' => 'Nombre Actualizado', 'email' => 'nuevoemail@example.com']);
@@ -89,7 +87,7 @@ class SociosApiTest extends TestCase
 
         $payload = ['email' => $socio2->email];
 
-        $response = $this->putJson('/api/socios/' . $socio1->cedula, $payload);
+        $response = $this->putJson('/api/socios/'.$socio1->cedula, $payload);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email']);

@@ -2,11 +2,11 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Illuminate\Support\Arr;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -38,16 +38,14 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-    
-        });
+        $this->reportable(function (Throwable $e) {});
         $this->registerRenderables();
     }
 
     public function registerRenderables(): void
     {
         $this->renderable(function (Throwable $e, $request) {
-            if (!$request->expectsJson() && !$request->is('api/*')) {
+            if (! $request->expectsJson() && ! $request->is('api/*')) {
                 return null;
             }
 

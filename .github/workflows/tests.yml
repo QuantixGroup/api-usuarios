@@ -28,15 +28,6 @@ jobs:
           coverage: xdebug
           extensions: pdo, pdo_sqlite
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "npm"
-
-      - name: Install Node Dependencies
-        run: npm i
-
       - name: Install Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
@@ -53,9 +44,6 @@ jobs:
         run: |
           php artisan config:clear
           php artisan cache:clear
-
-      - name: Build Assets
-        run: npm run production
 
       - name: Run Tests
         shell: bash

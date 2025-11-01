@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
+use App\Models\Socio;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
-use App\Models\User;
-use App\Models\Socio;
+use Tests\TestCase;
 
 class ApiPerfilTest extends TestCase
 {

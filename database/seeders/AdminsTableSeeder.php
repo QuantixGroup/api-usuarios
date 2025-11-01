@@ -1,17 +1,17 @@
 <?php
 
 namespace Database\Seeders;
-use Illuminate\Support\Facades\Hash;
+
 use App\Models\Admin;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class AdminsTableSeeder extends Seeder
 {
     public function run(): void
     {
         Admin::firstOrCreate([
-            'cedula' => '87654321'
+            'cedula' => '87654321',
         ], [
             'name' => 'Laura',
             'apellido' => 'Gomez',

@@ -14,7 +14,7 @@ class AddPrimerPasswordToAdminsTable extends Migration
     public function up()
     {
         Schema::table('admins', function (Blueprint $table) {
-            if (!Schema::hasColumn('admins', 'primer_password')) {
+            if (! Schema::hasColumn('admins', 'primer_password')) {
                 $table->boolean('primer_password')->default(false)->after('remember_token');
             }
         });

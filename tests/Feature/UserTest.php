@@ -2,15 +2,16 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\Traits\CreatesOauthClient;
-use Illuminate\Support\Facades\Storage;
-use Tests\TestCase;
-use Illuminate\Support\Str;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Tests\TestCase;
+use Tests\Traits\CreatesOauthClient;
+
 class UserTest extends TestCase
 {
-    use RefreshDatabase, CreatesOauthClient;
+    use CreatesOauthClient, RefreshDatabase;
     use \Illuminate\Foundation\Testing\WithFaker;
 
     private function actingUserSocio()
@@ -18,13 +19,14 @@ class UserTest extends TestCase
         $user = User::factory()->create([
             'cedula' => '90000010',
             'password' => bcrypt('90000010'),
-            'email' => 'foto@example.com'
+            'email' => 'foto@example.com',
         ]);
         \App\Models\Socio::factory()->create([
             'cedula' => $user->cedula,
-            'email' => $user->email
+            'email' => $user->email,
         ]);
         \Laravel\Passport\Passport::actingAs($user, ['*']);
+
         return $user;
     }
 
@@ -52,11 +54,12 @@ class UserTest extends TestCase
         $response = $this->postJson('/api/perfil/foto', ['foto' => $file]);
         $response->assertStatus(422);
     }
-    public function test_ObtenerTokenConClientIdValido()
+
+    public function test_obtener_token_con_client_id_valido()
     {
         $user = User::factory()->create([
             'cedula' => '90000001',
-            'password' => bcrypt('90000001')
+            'password' => bcrypt('90000001'),
         ]);
 
         $client = $this->createPasswordClient();
@@ -72,18 +75,18 @@ class UserTest extends TestCase
         $response->assertStatus(200);
 
         $response->assertJsonStructure([
-            "token_type",
-            "expires_in",
-            "access_token",
-            "refresh_token"
+            'token_type',
+            'expires_in',
+            'access_token',
+            'refresh_token',
         ]);
 
         $response->assertJsonFragment([
-            "token_type" => "Bearer"
+            'token_type' => 'Bearer',
         ]);
     }
 
-    public function test_ObtenerTokenConClientIdInvalido()
+    public function test_obtener_token_con_client_id_invalido()
     {
         $response = $this->post('/oauth/token', [
             'grant_type' => 'password',
@@ -94,33 +97,33 @@ class UserTest extends TestCase
         $response->assertStatus(401);
 
         $response->assertJsonFragment([
-            "error" => "invalid_client",
-            "error_description" => "Client authentication failed",
-            "message" => "Client authentication failed"
+            'error' => 'invalid_client',
+            'error_description' => 'Client authentication failed',
+            'message' => 'Client authentication failed',
         ]);
     }
 
-    public function test_ValidarTokenSinEnviarToken()
+    public function test_validar_token_sin_enviar_token()
     {
         $response = $this->getJson('/api/validate');
 
         $response->assertStatus(401);
     }
 
-    public function test_ValidarTokenConTokenInvalido()
+    public function test_validar_token_con_token_invalido()
     {
         $response = $this->getJson('/api/validate', [
-            'Authorization' => 'Bearer ' . Str::random(40),
+            'Authorization' => 'Bearer '.Str::random(40),
         ]);
 
         $response->assertStatus(401);
     }
 
-    public function test_ValidarTokenConTokenValido()
+    public function test_validar_token_con_token_valido()
     {
         $user = User::factory()->create([
             'cedula' => '90000002',
-            'password' => bcrypt('90000002')
+            'password' => bcrypt('90000002'),
         ]);
 
         $client = $this->createPasswordClient();
@@ -136,33 +139,33 @@ class UserTest extends TestCase
         $token = json_decode($tokenResponse->content(), true);
 
         $response = $this->getJson('/api/validate', [
-            'Authorization' => 'Bearer ' . ($token['access_token'] ?? ''),
+            'Authorization' => 'Bearer '.($token['access_token'] ?? ''),
         ]);
 
         $response->assertStatus(200);
     }
 
-    public function test_LogoutSinToken()
+    public function test_logout_sin_token()
     {
-        $response = $this->getJson('/api/logout');
+        $response = $this->postJson('/api/cerrar-sesion');
 
         $response->assertStatus(401);
     }
 
-    public function test_LogoutConTokenInvalido()
+    public function test_logout_con_token_invalido()
     {
-        $response = $this->getJson('/api/logout', [
-            'Authorization' => 'Bearer ' . Str::random(40),
+        $response = $this->postJson('/api/cerrar-sesion', [], [
+            'Authorization' => 'Bearer '.Str::random(40),
         ]);
 
         $response->assertStatus(401);
     }
 
-    public function test_LogoutConTokenValido()
+    public function test_logout_con_token_valido()
     {
         $user = User::factory()->create([
             'cedula' => '90000002',
-            'password' => bcrypt('90000002')
+            'password' => bcrypt('90000002'),
         ]);
 
         $client = $this->createPasswordClient();
@@ -177,14 +180,14 @@ class UserTest extends TestCase
 
         $token = json_decode($tokenResponse->content(), true);
 
-        $response = $this->getJson('/api/logout', [
-            'Authorization' => 'Bearer ' . ($token['access_token'] ?? ''),
+        $response = $this->postJson('/api/cerrar-sesion', [], [
+            'Authorization' => 'Bearer '.($token['access_token'] ?? ''),
         ]);
 
         $response->assertStatus(200);
 
         $response->assertJsonFragment([
-            'message' => 'Token Revoked'
+            'message' => 'Sesión cerrada',
         ]);
     }
 }
