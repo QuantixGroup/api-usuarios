@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Models\Socio;
 use App\Models\User;
 use Illuminate\Http\Request as HttpRequest;
@@ -25,17 +26,15 @@ class AuthController extends Controller
         }
 
         $usuario = User::where('cedula', $socio->cedula)->first();
-        if ($usuario) {
-            $client = DB::table('oauth_clients')
-                ->where('user_id', $usuario->id)
-                ->where('password_client', true)
-                ->where('revoked', false)
-                ->first();
 
-            if ($client) {
-                $clientId = $client->id;
-                $clientSecret = $client->secret;
-            }
+        $client = DB::table('oauth_clients')
+            ->where('password_client', true)
+            ->where('revoked', false)
+            ->first();
+
+        if ($client) {
+            $clientId = $client->id;
+            $clientSecret = $client->secret;
         }
 
         if (empty($clientId)) {
@@ -56,9 +55,16 @@ class AuthController extends Controller
             'HTTP_ACCEPT' => 'application/json',
         ]);
 
-        $res = app()->handle($sub);
-
-        $responseData = json_decode($res->getContent(), true);
+        try {
+            $res = app()->handle($sub);
+            $responseData = json_decode($res->getContent(), true);
+        } catch (\Throwable $e) {
+            Log::error('Error al solicitar /oauth/token: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json([
+                'error' => true,
+                'message' => 'Error al emitir token de acceso'
+            ], 500);
+        }
 
         if ($res->getStatusCode() === 200 && isset($responseData['access_token'])) {
             $primerInicio = $usuario ? $usuario->primer_inicio : true;
