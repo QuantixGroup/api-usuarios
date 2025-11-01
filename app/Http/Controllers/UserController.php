@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Lcobucci\JWT\Parser;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -19,7 +16,7 @@ class UserController extends Controller
         $personaUsuaria = $request->user();
         $socio = \App\Models\Socio::where('cedula', $personaUsuaria->cedula)->first();
 
-        if (!$socio) {
+        if (! $socio) {
             return response()->json(['error' => 'Socio no encontrado'], 404);
         }
 
@@ -50,7 +47,7 @@ class UserController extends Controller
             'nombre' => ['sometimes', 'string', 'max:100'],
             'telefono' => ['sometimes', 'string', 'max:50'],
             'direccion' => ['sometimes', 'string', 'max:255'],
-            'email' => ['sometimes', 'email', 'max:255', 'unique:users,email,' . $personaUsuaria->id],
+            'email' => ['sometimes', 'email', 'max:255', 'unique:users,email,'.$personaUsuaria->id],
         ]);
 
         if (isset($datos['nombre'])) {
@@ -95,7 +92,8 @@ class UserController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error actualizando perfil de usuario ' . ($personaUsuaria->id ?? 'n/a') . ': ' . $e->getMessage(), ['exception' => $e]);
+            Log::error('Error actualizando perfil de usuario '.($personaUsuaria->id ?? 'n/a').': '.$e->getMessage(), ['exception' => $e]);
+
             return response()->json(['error' => 'Ocurrió un error al actualizar el perfil'], 500);
         }
 
@@ -111,7 +109,7 @@ class UserController extends Controller
             'contrasena_nueva' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        if (!Hash::check($datos['contrasena_actual'], $personaUsuaria->password)) {
+        if (! Hash::check($datos['contrasena_actual'], $personaUsuaria->password)) {
             return response()->json(['error' => 'La contraseña actual no coincide'], 422);
         }
 
@@ -122,21 +120,15 @@ class UserController extends Controller
         return response()->json(['message' => 'Contraseña actualizada']);
     }
 
-    public function ValidateToken(Request $request)
+    public function validateToken(Request $request)
     {
         $user = auth('api')->user();
 
         return response()->json([
             'cedula' => $user->cedula,
             'nombre' => $user->name,
-            'rol' => $user->rol
+            'rol' => $user->rol,
         ]);
-    }
-
-    public function Logout(Request $request)
-    {
-        $request->user()->token()->revoke();
-        return ['message' => 'Token Revoked'];
     }
 
     public function fotoPerfil(Request $request)
@@ -151,7 +143,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'El archivo debe ser una imagen válida (JPG, PNG, GIF) de máximo 2MB',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -163,7 +155,7 @@ class UserController extends Controller
                 $path = $file->store('fotos_perfil', 'public');
 
                 $socio = \App\Models\Socio::where('cedula', $personaUsuaria->cedula)->first();
-                if (!$socio) {
+                if (! $socio) {
                     return response()->json(['error' => 'Socio no encontrado'], 404);
                 }
 
@@ -175,26 +167,27 @@ class UserController extends Controller
                 $socio->save();
 
                 DB::commit();
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Foto de perfil actualizada correctamente',
-                    'url_foto' => url(Storage::url($path))
+                    'url_foto' => url(Storage::url($path)),
                 ]);
             } catch (\Exception $e) {
                 DB::rollBack();
-                Log::error('Error al subir foto de perfil: ' . $e->getMessage(), ['exception' => $e]);
+                Log::error('Error al subir foto de perfil: '.$e->getMessage(), ['exception' => $e]);
 
                 if (isset($path) && Storage::disk('public')->exists($path)) {
                     Storage::disk('public')->delete($path);
                 }
+
                 return response()->json(['error' => 'Error al subir foto'], 500);
             }
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'No se ha subido ninguna foto'
+                'message' => 'No se ha subido ninguna foto',
             ], 400);
         }
     }
-
 }

@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Carbon\Carbon;
 
 class Socio extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $primaryKey = 'cedula';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $fillable = [
@@ -35,5 +36,9 @@ class Socio extends Model
         'fecha_ingreso',
         'fecha_egreso',
         'motivacion',
+    ];
+
+    protected $hidden = [
+        'contraseña',
     ];
 }

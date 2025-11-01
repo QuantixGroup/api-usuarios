@@ -34,7 +34,6 @@ return new class extends Migration
             $table->integer('finished_at')->nullable();
         });
 
-        
     }
 
     /**
@@ -44,6 +43,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('jobs');
         Schema::dropIfExists('job_batches');
-        
+
     }
 };

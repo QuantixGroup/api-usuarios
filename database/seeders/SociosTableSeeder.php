@@ -3,14 +3,13 @@
 namespace Database\Seeders;
 
 use App\Models\Socio;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class SociosTableSeeder extends Seeder
 {
     public function run(): void
     {
-        if (!Socio::where('cedula', '11112222')->exists()) {
+        if (! Socio::where('cedula', '11112222')->exists()) {
             Socio::create([
                 'cedula' => '11112222',
                 'nombre' => 'Juana',
@@ -31,7 +30,7 @@ class SociosTableSeeder extends Seeder
             ]);
         }
 
-        if (!Socio::where('cedula', '22223333')->exists()) {
+        if (! Socio::where('cedula', '22223333')->exists()) {
             Socio::create([
                 'cedula' => '22223333',
                 'nombre' => 'Carlos',
@@ -52,7 +51,7 @@ class SociosTableSeeder extends Seeder
             ]);
         }
 
-        if (!Socio::where('cedula', '33334444')->exists()) {
+        if (! Socio::where('cedula', '33334444')->exists()) {
             Socio::create([
                 'cedula' => '33334444',
                 'nombre' => 'María',
@@ -69,11 +68,11 @@ class SociosTableSeeder extends Seeder
                 'estado_civil' => 'Divorciada',
                 'integrantes_familiares' => '3',
                 'estado' => 'pendiente',
-                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             ]);
         }
 
-        if (!Socio::where('cedula', '44445555')->exists()) {
+        if (! Socio::where('cedula', '44445555')->exists()) {
             Socio::create([
                 'cedula' => '44445555',
                 'nombre' => 'Luis',
@@ -90,11 +89,11 @@ class SociosTableSeeder extends Seeder
                 'estado_civil' => 'Casado',
                 'integrantes_familiares' => '3',
                 'estado' => 'pendiente',
-                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             ]);
         }
 
-        if (!Socio::where('cedula', '55556666')->exists()) {
+        if (! Socio::where('cedula', '55556666')->exists()) {
             Socio::create([
                 'cedula' => '55556666',
                 'nombre' => 'Ana',
@@ -111,11 +110,11 @@ class SociosTableSeeder extends Seeder
                 'estado_civil' => 'Soltera',
                 'integrantes_familiares' => '1',
                 'estado' => 'pendiente',
-                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             ]);
         }
 
-        if (!Socio::where('cedula', '66667777')->exists()) {
+        if (! Socio::where('cedula', '66667777')->exists()) {
             Socio::create([
                 'cedula' => '66667777',
                 'nombre' => 'Roberto',
@@ -132,11 +131,11 @@ class SociosTableSeeder extends Seeder
                 'estado_civil' => 'Viudo',
                 'integrantes_familiares' => '2',
                 'estado' => 'pendiente',
-                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             ]);
         }
 
-        if (!Socio::where('cedula', '77778888')->exists()) {
+        if (! Socio::where('cedula', '77778888')->exists()) {
             Socio::create([
                 'cedula' => '77778888',
                 'nombre' => 'Patricia',
@@ -157,7 +156,7 @@ class SociosTableSeeder extends Seeder
             ]);
         }
 
-        if (!Socio::where('cedula', '88889999')->exists()) {
+        if (! Socio::where('cedula', '88889999')->exists()) {
             Socio::create([
                 'cedula' => '88889999',
                 'nombre' => 'Jorge',
@@ -174,11 +173,11 @@ class SociosTableSeeder extends Seeder
                 'estado_civil' => 'Casado',
                 'integrantes_familiares' => '4+',
                 'estado' => 'pendiente',
-                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             ]);
         }
 
-        if (!Socio::where('cedula', '99990000')->exists()) {
+        if (! Socio::where('cedula', '99990000')->exists()) {
             Socio::create([
                 'cedula' => '99990000',
                 'nombre' => 'Sofía',
@@ -195,7 +194,7 @@ class SociosTableSeeder extends Seeder
                 'estado_civil' => 'Divorciada',
                 'integrantes_familiares' => '2',
                 'estado' => 'pendiente',
-                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+                'motivacion' => 'lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             ]);
         }
     }

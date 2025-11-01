@@ -1,12 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\SocioController;
 use App\Http\Controllers\AuthController;
-
-
+use App\Http\Controllers\SocioController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,5 +34,4 @@ Route::middleware('auth:api')->group(function () {
 
 });
 
-Route::get('/validate', [UserController::class, "ValidateToken"])->middleware('auth:api');
-Route::get('/logout', [UserController::class, "Logout"])->middleware('auth:api');
+Route::get('/validate', [UserController::class, 'validateToken'])->middleware('auth:api');

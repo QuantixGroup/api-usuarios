@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Socio;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class SocioController extends Controller
 {
@@ -41,8 +40,8 @@ class SocioController extends Controller
             unset($data['mensaje']);
         }
 
-        if (!isset($data['contraseña'])) {
-            $data['contraseña'] = $data['cedula'];
+        if (! isset($data['contraseña'])) {
+            $data['contraseña'] = Hash::make($data['cedula']);
         }
 
         $socio = Socio::create($data);
@@ -53,19 +52,19 @@ class SocioController extends Controller
     public function mostrar($id)
     {
         $socio = Socio::findOrFail($id);
+
         return $socio;
     }
-
 
     public function actualizar(Request $request, $id)
     {
         $socio = Socio::findOrFail($id);
 
         $validated = $request->validate([
-            'cedula' => 'sometimes|unique:socios,cedula,' . $socio->cedula . ',cedula',
+            'cedula' => 'sometimes|unique:socios,cedula,'.$socio->cedula.',cedula',
             'nombre' => 'sometimes|string',
             'apellido' => 'sometimes|string',
-            'email' => 'sometimes|email|unique:socios,email,' . $socio->cedula . ',cedula',
+            'email' => 'sometimes|email|unique:socios,email,'.$socio->cedula.',cedula',
             'telefono' => 'sometimes|string',
             'direccion' => 'sometimes|string',
             'fecha_nacimiento' => 'sometimes|date',
@@ -82,6 +81,7 @@ class SocioController extends Controller
         foreach ($validated as $key => $value) {
             if ($key === 'mensaje') {
                 $socio->motivacion = $value;
+
                 continue;
             }
             $socio->$key = $value;
@@ -91,7 +91,7 @@ class SocioController extends Controller
 
         return response()->json([
             'message' => 'Socio actualizado',
-            'socio' => $socio
+            'socio' => $socio,
         ], 200);
     }
 
@@ -99,8 +99,7 @@ class SocioController extends Controller
     {
         $socio = Socio::findOrFail($id);
         $socio->delete();
+
         return response()->json(['message' => 'Socio eliminado']);
     }
-
-
 }
