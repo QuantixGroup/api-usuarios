@@ -40,10 +40,6 @@ class SocioController extends Controller
             unset($data['mensaje']);
         }
 
-        if (! isset($data['contraseña'])) {
-            $data['contraseña'] = Hash::make($data['cedula']);
-        }
-
         $socio = Socio::create($data);
 
         return response()->json($socio, 201);
